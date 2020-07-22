@@ -1,0 +1,9 @@
+config/**/*
+.vscode/**/*
+node_modules/**/*
+src/**/*
+webview/**/*
+.eslintrc.yml
+.gitignore
+.vscodeignore
+task.md
