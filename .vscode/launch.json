@@ -14,7 +14,17 @@
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "sourceMaps": true
-            // "preLaunchTask": "npm: build_main:dev"
+        },
+        {
+            "name": "Debug Webview",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:65432",
+            "webRoot": "${workspaceFolder}/webview",
+            "sourceMaps": true,
+            "pathMapping": {
+                "webpack:///.": "${workspaceFolder}/webview"
+            }
         }
     ]
 }

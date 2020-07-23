@@ -2,7 +2,7 @@ import React from 'react'
 import { File } from './File'
 import { toCanvas } from 'qrcode'
 import { Extra } from './Extra'
-import { vscode } from '.'
+import { vscode } from './index'
 
 interface Props {
     host: string;
@@ -118,7 +118,12 @@ export class App extends React.Component<Props, State> {
         files.push(<Extra key="extra" />)
         this.renderCanvas()
         const url = this.url
-        return (<div>
+        return (<div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-around',
+            alignItems: 'center'
+        }}>
             <canvas ref={this.updateCanvas} />
             <div>
                 <a href={url}>{url}</a>
