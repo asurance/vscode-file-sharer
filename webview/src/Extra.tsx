@@ -1,5 +1,5 @@
 import React from 'react'
-import { vscode } from './index'
+import { vscode } from '.'
 
 function onClick(): void {
     const message: OutMessage<'SelectFile'> = {

@@ -2,7 +2,7 @@ import React from 'react'
 import { File } from './File'
 import { toCanvas } from 'qrcode'
 import { Extra } from './Extra'
-import { vscode } from './index'
+import { vscode } from '.'
 
 interface Props {
     host: string;

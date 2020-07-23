@@ -2,22 +2,12 @@ import Merge from 'webpack-merge'
 import { resolve } from 'path'
 import BaseConfig from './webpack.base.config'
 import type { Configuration } from 'webpack'
+import HtmlWebpackPlugin from 'html-webpack-plugin'
 
 const config = {
-    entry: {
-        index: resolve(__dirname, '../src/debug.ts')
-    },
-    module: {
-        rules: [
-            {
-                test: /\.tsx?$/,
-                exclude: /node_modules/,
-                use: {
-                    loader: 'ts-loader',
-                }
-            }
-        ]
-    },
+    plugins: [
+        new HtmlWebpackPlugin({ title: 'vscode qrcode', template: resolve(__dirname, '../debug.html') })
+    ],
     mode: 'development',
     devtool: 'source-map',
     devServer: {
