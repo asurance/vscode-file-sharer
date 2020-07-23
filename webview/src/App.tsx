@@ -21,7 +21,7 @@ export class App extends React.Component<Props, State> {
         super(props)
         this.state = vscode.getState() ?? {
             select: null,
-            fileInfo: [],
+            fileInfo: [{ name: '12', uuid: '321' }],
         }
         window.onmessage = this.onMessage
     }
@@ -121,14 +121,17 @@ export class App extends React.Component<Props, State> {
         return (<div style={{
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'space-around',
             alignItems: 'center'
         }}>
             <canvas ref={this.updateCanvas} />
-            <div>
-                <a href={url}>{url}</a>
-                {this.state.select === null ? null : <button onClick={this.onCopy}>Copy</button>}
-            </div>
+            {this.state.select === null ? null :
+                <div style={{
+                    background: '#f1f1f1',
+                    color: '#6e6b5e',
+                }}>
+                    <a href={url}>{url}</a>
+                    <button onClick={this.onCopy}>Copy</button>
+                </div>}
             <div>{files}</div>
         </div>)
     }
