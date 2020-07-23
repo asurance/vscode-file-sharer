@@ -1,6 +1,6 @@
 import { networkInterfaces } from 'os'
-import { AddressInfo } from 'net'
-import { Express } from 'express'
+import type { Express } from 'express'
+import type { AddressInfo } from 'net'
 
 export function getIp(): string {
     const interfaces = networkInterfaces()

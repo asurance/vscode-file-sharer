@@ -1,11 +1,11 @@
-import { commands, window, ViewColumn, Uri, workspace, OpenDialogOptions, env } from 'vscode'
+import express from 'express'
+import { commands, window, ViewColumn, Uri, workspace, env } from 'vscode'
 import { resolve, basename } from 'path'
 import { readFile, existsSync } from 'fs'
-import type { ExtensionContext, WebviewPanel, Disposable } from 'vscode'
 import { PromiseObject } from './promiseObject'
-import express, { Express } from 'express'
 import { getIp, createServer } from './network'
-import { } from 'path'
+import type { Express } from 'express'
+import type { ExtensionContext, WebviewPanel, Disposable, OpenDialogOptions } from 'vscode'
 
 async function GetWebviewContent(context: ExtensionContext): Promise<string> {
     const publicPath = resolve(context.extensionPath, 'public')
