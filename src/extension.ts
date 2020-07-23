@@ -1,6 +1,6 @@
 import express from 'express'
 import { commands, window, ViewColumn, Uri, workspace, env } from 'vscode'
-import { resolve, basename } from 'path'
+import { resolve } from 'path'
 import { readFile, existsSync } from 'fs'
 import { PromiseObject } from './promiseObject'
 import { getIp, createServer } from './network'
@@ -26,9 +26,7 @@ async function ParseWebviewContent(context: ExtensionContext, app: Express): Pro
     const content = await GetWebviewContent(context)
     const host = getIp()
     const port = await createServer(app)
-    return content.replace(/<meta id="data" host=".*" port=".*"(.*)\/>/, (match, $1) => {
-        return `<meta id="data" host="${host}" port="${port}" ${$1}/>`
-    })
+    return content.replace(/<meta id="data" \/>/, `<meta id="data" host="${host}" port="${port}" />`)
 }
 
 export function createUUID(): string {
@@ -50,9 +48,6 @@ export function activate(context: ExtensionContext): void {
         if (uuid in fileMap) {
             const path = fileMap[uuid]
             if (existsSync(path)) {
-                const fileName = basename(fileMap[uuid])
-                // res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`)
-                res.setHeader('Content-Disposition', `filename="${fileName}"`)
                 res.sendFile(fileMap[uuid])
             } else {
                 res.status(404).send()

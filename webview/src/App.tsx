@@ -11,7 +11,7 @@ interface Props {
 
 interface State {
     select: number | null;
-    fileList: FileInfo[];
+    fileInfo: FileInfo[];
 }
 
 export class App extends React.Component<Props, State> {
@@ -19,9 +19,9 @@ export class App extends React.Component<Props, State> {
 
     constructor(props: Readonly<Props>) {
         super(props)
-        this.state = {
+        this.state = vscode.getState() ?? {
             select: null,
-            fileList: vscode.getState() ?? [],
+            fileInfo: [],
         }
         window.onmessage = this.onMessage
     }
@@ -30,8 +30,18 @@ export class App extends React.Component<Props, State> {
         if (this.state.select === null) {
             return 'Welcome to file sharer'
         } else {
-            return `http://${this.props.host}:${this.props.port}/${this.state.fileList[this.state.select].uuid}`
+            return `http://${this.props.host}:${this.props.port}/${this.state.fileInfo[this.state.select].uuid}`
         }
+    }
+
+    private save(): void {
+        vscode.setState(this.state)
+    }
+
+    private setStateWithSave<K extends keyof State>(
+        state: (Pick<State, K> | State | null),
+    ): void {
+        this.setState<K>(state, this.save)
     }
 
     private updateCanvas = (canvas: HTMLCanvasElement | null): void => {
@@ -46,7 +56,7 @@ export class App extends React.Component<Props, State> {
     }
 
     private onSelect(index: number): void {
-        this.setState({
+        this.setStateWithSave({
             select: index
         })
     }
@@ -54,32 +64,30 @@ export class App extends React.Component<Props, State> {
     private onRemove(index: number): void {
         const message: OutMessage<'DeleteFile'> = {
             type: 'DeleteFile',
-            data: this.state.fileList[index].uuid
+            data: this.state.fileInfo[index].uuid
         }
         vscode.postMessage(message)
-        const fileList = this.state.fileList.slice(0, index)
-        fileList.push(...this.state.fileList.slice(index + 1))
-        vscode.setState(fileList)
+        const fileList = this.state.fileInfo.slice(0, index)
+        fileList.push(...this.state.fileInfo.slice(index + 1))
         if (fileList.length === 0)
-            this.setState({
+            this.setStateWithSave({
                 select: null,
-                fileList,
+                fileInfo: fileList,
             })
         else {
-            this.setState({
+            this.setStateWithSave({
                 select: Math.min(this.state.select!, fileList.length - 1),
-                fileList,
+                fileInfo: fileList,
             })
         }
     }
 
     private messageCB: { [key in keyof InMessageMap]: InMessageCB<key> } = {
         FileInfo: (data) => {
-            const fileList = this.state.fileList.concat(data)
-            vscode.setState(fileList)
-            this.setState({
+            const fileList = this.state.fileInfo.concat(data)
+            this.setStateWithSave({
                 select: fileList.length - 1,
-                fileList,
+                fileInfo: fileList,
             })
         },
     }
@@ -99,7 +107,7 @@ export class App extends React.Component<Props, State> {
     }
 
     render(): JSX.Element {
-        const files = this.state.fileList.map((f, i) =>
+        const files = this.state.fileInfo.map((f, i) =>
             <File
                 key={f.uuid}
                 select={this.state.select === i}

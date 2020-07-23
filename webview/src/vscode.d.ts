@@ -11,7 +11,10 @@ declare interface OutMessageMap {
     DeleteFile: string;
     Copy: string;
 }
-declare type State = FileInfo[]
+declare interface State {
+    select: number | null;
+    fileInfo: FileInfo[];
+}
 declare type InMessageCB<T extends keyof InMessageMap> = T extends UndefinedName<InMessageMap> ?
     () => void : (data: InMessageMap[T]) => void
 declare type OutMessage<T extends keyof OutMessageMap> = T extends UndefinedName<OutMessageMap> ? {
