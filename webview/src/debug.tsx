@@ -23,4 +23,9 @@ window.acquireVsCodeApi = (): VSCode<State> => {
         }
     }
 }
+const meta = document.getElementById('data') as HTMLMetaElement
+meta.setAttribute('id', 'data')
+meta.setAttribute('host', '0.0.0.0')
+meta.setAttribute('port', '10086')
+document.head.appendChild(meta)
 import('./index')

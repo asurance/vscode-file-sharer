@@ -20,13 +20,13 @@ export class Button extends React.Component<Props, State> {
         }
     }
 
-    private onMouseEnter = (): void => {
+    private onMouseOver = (): void => {
         this.setState({
             hover: true
         })
     }
 
-    private onMouseLeave = (): void => {
+    private onMouseOut = (): void => {
         this.setState({
             hover: false,
             select: false,
@@ -66,6 +66,6 @@ export class Button extends React.Component<Props, State> {
                 boxShadow: 'inset 0 1px 0 white, inset 0 -1px 0 #d9d9d9, inset 0 0 0 1px #f2f2f2'
             } : {}
         }
-        return (<button style={style} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave} onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp}>{this.props.content}</button>)
+        return (<button style={style} onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut} onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp}>{this.props.content}</button>)
     }
 }

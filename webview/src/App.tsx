@@ -130,10 +130,12 @@ export class App extends React.Component<Props, State> {
             }} ref={this.updateCanvas} />
             {this.state.select === null ? null :
                 <div style={{
-                    background: '#f1f1f1',
-                    color: '#6e6b5e',
+                    background: '#3f3f3f',
                     margin: 6,
                     padding: 6,
+                    borderRadius: 5,
+                    display: 'flex',
+                    justifyContent: 'space-between',
                 }}>
                     <a href={url}>{url}</a>
                     <Button onClick={this.onCopy} content="Copy" />
