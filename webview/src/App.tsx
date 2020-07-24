@@ -2,7 +2,8 @@ import React from 'react'
 import { File } from './File'
 import { toCanvas } from 'qrcode'
 import { Extra } from './Extra'
-import { vscode } from '.'
+import { vscode } from './index'
+import { Button } from './Button'
 
 interface Props {
     host: string;
@@ -21,7 +22,7 @@ export class App extends React.Component<Props, State> {
         super(props)
         this.state = vscode.getState() ?? {
             select: null,
-            fileInfo: [{ name: '12', uuid: '321' }],
+            fileInfo: [],
         }
         window.onmessage = this.onMessage
     }
@@ -99,6 +100,7 @@ export class App extends React.Component<Props, State> {
     }
 
     private onCopy = (): void => {
+        console.log('copy')
         const message: OutMessage<'Copy'> = {
             type: 'Copy',
             data: this.url
@@ -130,7 +132,7 @@ export class App extends React.Component<Props, State> {
                     color: '#6e6b5e',
                 }}>
                     <a href={url}>{url}</a>
-                    <button onClick={this.onCopy}>Copy</button>
+                    <Button onClick={this.onCopy} content="Copy" />
                 </div>}
             <div>{files}</div>
         </div>)

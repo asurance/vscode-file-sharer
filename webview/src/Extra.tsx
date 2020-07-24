@@ -1,5 +1,6 @@
 import React from 'react'
-import { vscode } from '.'
+import { vscode } from './index'
+import { Button } from './Button'
 
 function onClick(): void {
     const message: OutMessage<'SelectFile'> = {
@@ -9,5 +10,5 @@ function onClick(): void {
 }
 
 export function Extra(): JSX.Element {
-    return (<div><button onClick={onClick}>+</button></div>)
+    return (<div><Button onClick={onClick} content="+" /></div>)
 }

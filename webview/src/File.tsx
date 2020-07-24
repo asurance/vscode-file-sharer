@@ -1,4 +1,5 @@
 import React from 'react'
+import { Button } from './Button'
 
 interface Props {
     name: string;
@@ -8,5 +9,5 @@ interface Props {
 }
 
 export function File(props: Readonly<Props>): JSX.Element {
-    return (<div><span onClick={props.onSelect}>{props.name}</span><button onClick={props.onRemove}>-</button></div>)
+    return (<div><span onClick={props.onSelect}>{props.name}</span><Button onClick={props.onRemove} content="-" /></div>)
 }
