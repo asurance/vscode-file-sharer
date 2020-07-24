@@ -125,16 +125,24 @@ export class App extends React.Component<Props, State> {
             flexDirection: 'column',
             alignItems: 'center'
         }}>
-            <canvas ref={this.updateCanvas} />
+            <canvas style={{
+                margin: 12
+            }} ref={this.updateCanvas} />
             {this.state.select === null ? null :
                 <div style={{
                     background: '#f1f1f1',
                     color: '#6e6b5e',
+                    margin: 6,
+                    padding: 6,
                 }}>
                     <a href={url}>{url}</a>
                     <Button onClick={this.onCopy} content="Copy" />
                 </div>}
-            <div>{files}</div>
+            <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'stretch'
+            }}>{files}</div>
         </div>)
     }
 }

@@ -1,6 +1,7 @@
 import React from 'react'
 
 interface Props {
+    style?: React.CSSProperties;
     content: string;
     onClick: () => void;
 }
@@ -49,6 +50,7 @@ export class Button extends React.Component<Props, State> {
 
     render(): JSX.Element {
         const style: React.CSSProperties = {
+            ...this.props.style ?? {},
             outline: 'none',
             backgroundColor: '#f2f2f2',
             border: '1px solid #bfbfbf',

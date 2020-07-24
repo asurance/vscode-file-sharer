@@ -10,5 +10,5 @@ function onClick(): void {
 }
 
 export function Extra(): JSX.Element {
-    return (<div><Button onClick={onClick} content="+" /></div>)
+    return (<div style={{ alignSelf: 'center' }}><Button onClick={onClick} content="+" /></div>)
 }
