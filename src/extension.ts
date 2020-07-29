@@ -26,7 +26,7 @@ async function ParseWebviewContent(context: ExtensionContext, app: Express): Pro
     const content = await GetWebviewContent(context)
     const host = getIp()
     const port = await createServer(app)
-    return content.replace(/<meta id="data" \/>/, `<meta id="data" host="${host}" port="${port}" />`)
+    return content.replace(/<meta id="data".*?\/>/, `<meta id="data" host="${host}" port="${port}" />`)
 }
 
 export function createUUID(): string {

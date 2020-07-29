@@ -1,7 +1,7 @@
 {
-    "name": "vscode-qrcode",
-    "version": "1.0.7",
-    "description": "qrcode preview for vscode",
+    "name": "vscode-file-sharer",
+    "version": "1.0.0",
+    "description": "file sharer for vscode",
     "publisher": "asurance",
     "main": "./dist/extension.js",
     "scripts": {
@@ -15,9 +15,9 @@
         "build:prod": "npm run build_main:prod && npm run build_webview:prod"
     },
     "keywords": [
-        "qrcode"
+        "file"
     ],
-    "displayName": "QRCode",
+    "displayName": "FileSharer",
     "engines": {
         "vscode": "^1.47.0"
     },
@@ -34,20 +34,13 @@
                 "command": "asurance.vscodeFileSharer",
                 "category": "FileSharer"
             }
-        ],
-        "menus": {
-            "editor/context": [
-                {
-                    "command": "asurance.vscodeFileSharer",
-                    "group": "z_commands"
-                }
-            ]
-        }
+        ]
     },
     "repository": {
         "type": "git",
         "url": "https://github.com/asurance/vscode-qrcode.git"
     },
+    "icon": "icon.png",
     "license": "SEE LICENSE IN LICENSE",
     "bugs": {
         "url": "https://github.com/asurance/vscode-qrcode/issues"
