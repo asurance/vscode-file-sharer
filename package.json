@@ -1,6 +1,6 @@
 {
     "name": "vscode-file-sharer",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "description": "file sharer for vscode",
     "publisher": "asurance",
     "main": "./dist/extension.js",
@@ -19,7 +19,7 @@
     ],
     "displayName": "FileSharer",
     "engines": {
-        "vscode": "^1.47.0"
+        "vscode": "^1.51.0"
     },
     "categories": [
         "Other"
