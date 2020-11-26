@@ -100,7 +100,6 @@ export class App extends React.Component<Props, State> {
     }
 
     private onCopy = (): void => {
-        console.log('copy')
         const message: OutMessage<'Copy'> = {
             type: 'Copy',
             data: this.url
@@ -130,14 +129,14 @@ export class App extends React.Component<Props, State> {
             }} ref={this.updateCanvas} />
             {this.state.select === null ? null :
                 <div style={{
-                    background: '#3f3f3f',
+                    background: '#f1f1f1',
                     margin: 6,
                     padding: 6,
                     borderRadius: 5,
                     display: 'flex',
                     justifyContent: 'space-between',
                 }}>
-                    <a href={url}>{url}</a>
+                    <a style={{ color: '#3f3f3f', marginRight: 10 }} href={url}>{url}</a>
                     <Button onClick={this.onCopy} content="Copy" />
                 </div>}
             <div style={{

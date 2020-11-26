@@ -20,7 +20,7 @@ export function File(props: Readonly<Props>): JSX.Element {
             display: 'flex',
             justifyContent: 'space-between',
         }}>
-        <span >{props.name}</span>
+        <span style={{ marginRight: 12 }} >{props.name}</span>
         <Button style={{ margin: 3 }} onClick={props.onRemove} content="-" />
     </div>)
 }
