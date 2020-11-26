@@ -2,7 +2,6 @@ import express from 'express'
 import { commands, window, ViewColumn, Uri, workspace, env } from 'vscode'
 import { resolve } from 'path'
 import { readFile, existsSync } from 'fs'
-import { PromiseObject } from './promiseObject'
 import { getIp, createServer } from './network'
 import type { Express } from 'express'
 import type { ExtensionContext, WebviewPanel, Disposable, OpenDialogOptions } from 'vscode'
@@ -56,7 +55,7 @@ export function activate(context: ExtensionContext): void {
             res.status(404).send()
         }
     })
-    const webviewContent = new PromiseObject(ParseWebviewContent(context, app))
+    const webviewContent = ParseWebviewContent(context, app)
     const inMessageCBMap: { [T in keyof InMessageMap]: InMessageCB<T> } = {
         SelectFile: async () => {
             const option: OpenDialogOptions = workspace.workspaceFolders ? { defaultUri: workspace.workspaceFolders[0].uri } : {}
@@ -100,7 +99,7 @@ export function activate(context: ExtensionContext): void {
                     localResourceRoots: [Uri.file(resolve(context.extensionPath, 'public'))]
                 }
             )
-            const html = await webviewContent.getData()
+            const html = await webviewContent
             panel.webview.html = html
             const dispose: Disposable[] = []
             dispose.push(panel.onDidDispose(() => {
