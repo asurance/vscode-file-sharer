@@ -25,6 +25,17 @@
             "pathMapping": {
                 "webpack:///.": "${workspaceFolder}/webview"
             }
+        },
+        {
+            "name": "Debug Browser",
+            "request": "launch",
+            "type": "chrome",
+            "url": "http://localhost:45862",
+            "webRoot": "${workspaceFolder}/browser",
+            "sourceMaps": true,
+            "pathMapping": {
+                "webpack:///.": "${workspaceFolder}/browser"
+            }
         }
     ]
 }
