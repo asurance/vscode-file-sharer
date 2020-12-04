@@ -1,19 +1,19 @@
 declare type UndefinedName<T> = { [key in keyof T]: T[key] extends undefined ? key : never }[keyof T]
-declare interface FileInfo {
-    name: string;
-    uuid: string;
-}
+// declare interface FileInfo {
+//     name: string;
+//     uuid: string;
+// }
 declare interface InMessageMap {
-    FileInfo: FileInfo[];
+    // FileInfo: FileInfo[];
 }
 declare interface OutMessageMap {
-    SelectFile: undefined;
-    DeleteFile: string;
-    Copy: string;
+    // SelectFile: undefined;
+    // DeleteFile: string;
+    // Copy: string;
 }
 declare interface State {
-    select: number | null;
-    fileInfo: FileInfo[];
+    // select: number | null;
+    // fileInfo: FileInfo[];
 }
 declare type InMessageCB<T extends keyof InMessageMap> = T extends UndefinedName<InMessageMap> ?
     () => void : (data: InMessageMap[T]) => void
@@ -29,3 +29,5 @@ declare interface VSCode<T> {
     postMessage<K extends keyof OutMessageMap>(message: OutMessage<K>): void;
 }
 declare function acquireVsCodeApi(): VSCode<State>;
+
+declare module '*.css';

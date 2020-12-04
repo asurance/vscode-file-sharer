@@ -1,6 +1,7 @@
 import { resolve } from 'path'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import type { Configuration } from 'webpack'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 
 const config = {
     entry: {
@@ -20,11 +21,17 @@ const config = {
                         onlyCompileBundledFiles: true
                     }
                 }
-            }
+            },
+            {
+                test: /\.css$/,
+                exclude: /node_modules/,
+                use: [MiniCssExtractPlugin.loader, 'css-loader']
+            },
         ]
     },
     plugins: [
-        new HtmlWebpackPlugin({ title: 'vscode qrcode', template: resolve(__dirname, '../index.html') })
+        new HtmlWebpackPlugin({ template: resolve(__dirname, '../index.html') }),
+        new MiniCssExtractPlugin(),
     ],
     resolve: {
         extensions: ['.ts', '.js', '.tsx']
