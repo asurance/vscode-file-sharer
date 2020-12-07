@@ -1,11 +1,23 @@
 import React from 'react'
-import { hello } from '../style/main.css'
+import { root, list } from '../style/App.css'
+import { FileArea } from './FileArea'
+import { QRCodeArea } from './QRCodeArea'
+import { ServerArea } from './ServerArea'
+import { TextArea } from './TextArea'
+import { UploadArea } from './UploadArea'
 
 export function App(): JSX.Element {
     return (<div
-        className={hello}
+        className={root}
     >
-        <div className=''></div>
-        <div className=''></div>
+        <div className={list}>
+            <ServerArea />
+            <QRCodeArea text="hello" />
+            <TextArea />
+        </div>
+        <div className={list}>
+            <FileArea />
+            <UploadArea />
+        </div>
     </div>)
 }
