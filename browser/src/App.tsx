@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react'
+import { root, buttonList, textArea } from './App.css'
 
 interface Props {
     serverUrl: string;
@@ -12,11 +13,14 @@ export function App({ serverUrl }: Readonly<Props>): JSX.Element {
     const onSyncClick = useCallback(() => {
         fetch(serverUrl, { method: 'post', body: textValue })
     }, [serverUrl, textValue])
-    return (<div>
-        <div>
+    const onInput = useCallback((ev: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setTextValue(ev.target.value)
+    }, [])
+    return (<div className={root}>
+        <div className={buttonList}>
             <button onClick={onRefreshClick}>更新</button>
             <button onClick={onSyncClick}>同步</button>
         </div>
-        <textarea value={textValue} />
+        <textarea className={textArea} value={textValue} onChange={onInput} autoComplete="on" />
     </div>)
 }
