@@ -7,25 +7,22 @@ function createUUID(): string {
     })
     return uuid
 }
-window.acquireVsCodeApi = (): VSCode<State> => {
+window.acquireVsCodeApi = (): VSCode<Partial<State>> => {
     return {
-        getState(): undefined {
-            return undefined
+        getState(): Partial<State> | undefined {
+            const item = localStorage.getItem('state')
+            if (item) {
+                return JSON.parse(item)
+            }
         },
-        setState(): void {
-            // none
+        setState(state): void {
+            localStorage.setItem('state', JSON.stringify(state))
         },
         postMessage(message): void {
-            // none
             if (message.type === 'SelectFile') {
                 window.postMessage({ type: 'FileInfo', data: [{ name: createUUID(), uuid: createUUID() }] }, '*')
             }
         }
     }
 }
-const meta = document.getElementById('data') as HTMLMetaElement
-meta.setAttribute('id', 'data')
-meta.setAttribute('host', '0.0.0.0')
-meta.setAttribute('port', '10086')
-document.head.appendChild(meta)
 import('./index')

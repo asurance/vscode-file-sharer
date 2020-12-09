@@ -6,11 +6,22 @@ import { ServerArea } from './Server/ServerArea'
 import { TextArea } from './Text/TextArea'
 import { UploadArea } from './Upload/UploadArea'
 
-export function App(): JSX.Element {
+interface Props {
+    api: VSCode<Partial<State>>;
+}
+
+const defaultState: State = {
+    text: ''
+}
+
+export function App({
+    api,
+}: Readonly<Props>): JSX.Element {
+    const { text } = { ...defaultState, ...api.getState() }
     return (<div className={root}>
         <div className={list}>
             <ServerArea />
-            <QRCodeArea text="hello" />
+            <QRCodeArea text={text} />
             <TextArea />
         </div>
         <div className={list}>
