@@ -1,3 +1,1 @@
-export const enum Default {
-    QRCodeText = 'Welcome to file sharer!',
-}
+export const DefaultQRCodeText = 'Welcome to file sharer!'

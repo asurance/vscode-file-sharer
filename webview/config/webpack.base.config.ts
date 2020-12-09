@@ -25,7 +25,25 @@ const config = {
             {
                 test: /\.css$/,
                 exclude: /node_modules/,
-                use: [MiniCssExtractPlugin.loader, 'css-loader']
+                use: [
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                        options: {
+                            esModule: true,
+                            modules: {
+                                namedExport: true,
+                            },
+                        },
+                    },
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            esModule: true,
+                            modules: {
+                                namedExport: true,
+                            },
+                        },
+                    },]
             },
         ]
     },

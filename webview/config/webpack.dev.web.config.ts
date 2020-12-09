@@ -35,7 +35,6 @@ const config = {
                             esModule: true,
                             modules: {
                                 namedExport: true,
-                                // localIdentName: 'foo__[name]__[local]',
                             },
                         },
                     },
