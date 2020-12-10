@@ -7,17 +7,8 @@
 //     })
 //     return uuid
 // }
-window.acquireVsCodeApi = (): VSCode<Partial<State>> => {
+window.acquireVsCodeApi = (): VSCode => {
     return {
-        getState(): Partial<State> | undefined {
-            const item = localStorage.getItem('state')
-            if (item) {
-                return JSON.parse(item)
-            }
-        },
-        setState(state): void {
-            localStorage.setItem('state', JSON.stringify(state))
-        },
         postMessage(message): void {
             switch (message.type) {
                 case 'StartServer':

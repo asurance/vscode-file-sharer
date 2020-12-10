@@ -10,7 +10,7 @@ const enum ServerStep {
 }
 
 interface IProps {
-    postMessage: VSCode<Partial<State>>['postMessage'];
+    postMessage: VSCode['postMessage'];
     onServerEnableChanged: (enable: boolean) => void;
 }
 

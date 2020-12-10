@@ -1,6 +1,5 @@
 import React from 'react'
 import { toCanvas } from 'qrcode'
-import { DefaultQRCodeText } from '../../config'
 import { root } from './QRCodeArea.css'
 
 interface Props {
@@ -13,7 +12,7 @@ export function QRCodeArea({
     return (<div className={root}>
         <canvas
             ref={(ref): Promise<void> | null =>
-                ref && toCanvas(ref, text.length > 0 ? text : DefaultQRCodeText)}
+                ref && toCanvas(ref, text)}
             width={100}
             height={100}
         />

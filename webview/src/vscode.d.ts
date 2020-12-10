@@ -7,9 +7,7 @@ declare interface OutMessageMap {
     StartServer: undefined;
     StopServer: undefined;
 }
-declare interface State {
-    text: string;
-}
+
 declare type InMessageCB<T extends keyof InMessageMap> = T extends UndefinedName<InMessageMap> ?
     () => void : (data: InMessageMap[T]) => void
 declare type OutMessage<T extends keyof OutMessageMap> = T extends UndefinedName<OutMessageMap> ? {
@@ -18,11 +16,9 @@ declare type OutMessage<T extends keyof OutMessageMap> = T extends UndefinedName
     type: T;
     data: OutMessageMap[T];
 }
-declare interface VSCode<T> {
-    getState(): T | undefined;
-    setState(state: T): void;
+declare interface VSCode {
     postMessage<K extends keyof OutMessageMap>(message: OutMessage<K>): void;
 }
-declare function acquireVsCodeApi(): VSCode<Partial<State>>;
+declare function acquireVsCodeApi(): VSCode;
 
 declare module '*.css';
