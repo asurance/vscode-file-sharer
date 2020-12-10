@@ -1,7 +1,11 @@
 declare type UndefinedName<T> = { [key in keyof T]: T[key] extends undefined ? key : never }[keyof T]
 declare interface InMessageMap {
+    StartServer: string;
+    StopServer: undefined;
 }
 declare interface OutMessageMap {
+    StartServer: undefined;
+    StopServer: undefined;
 }
 declare interface State {
     text: string;

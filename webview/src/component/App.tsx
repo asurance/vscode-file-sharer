@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useState } from 'react'
 import { root, list } from './App.css'
 import { FileArea } from './File/FileArea'
 import { QRCodeArea } from './QRCode/QRCodeArea'
@@ -11,16 +11,20 @@ interface Props {
 }
 
 const defaultState: State = {
-    text: ''
+    text: '',
 }
 
 export function App({
     api,
 }: Readonly<Props>): JSX.Element {
     const { text } = { ...defaultState, ...api.getState() }
+    const [serveEnabled, setServerEnabled] = useState(false)
+    const onServerEnableChanged = useCallback((enabled: boolean) => {
+        setServerEnabled(enabled)
+    }, [])
     return (<div className={root}>
         <div className={list}>
-            <ServerArea />
+            <ServerArea postMessage={api.postMessage} onServerEnableChanged={onServerEnableChanged} />
             <QRCodeArea text={text} />
             <TextArea />
         </div>
