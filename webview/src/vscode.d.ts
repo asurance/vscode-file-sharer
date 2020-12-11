@@ -2,10 +2,12 @@ declare type UndefinedName<T> = { [key in keyof T]: T[key] extends undefined ? k
 declare interface InMessageMap {
     StartServer: string;
     StopServer: undefined;
+    SyncText: string;
 }
 declare interface OutMessageMap {
     StartServer: undefined;
     StopServer: undefined;
+    SyncText: string;
 }
 
 declare type InMessageCB<T extends keyof InMessageMap> = T extends UndefinedName<InMessageMap> ?

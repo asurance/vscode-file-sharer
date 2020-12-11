@@ -20,8 +20,19 @@ window.acquireVsCodeApi = (): VSCode => {
                     setTimeout(() => {
                         window.postMessage({ type: 'StopServer' }, '*')
                     }, 500)
+                    break
+                case 'SyncText':
+                    console.log((message as OutMessage<'SyncText'>).data)
+                    break
             }
         }
     }
+}
+interface Window {
+    sync: (text: string) => void;
+
+}
+window.sync = (text): void => {
+    window.postMessage({ type: 'SyncText', data: text }, '*')
 }
 import('./index')

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { toCanvas } from 'qrcode'
 import { root } from './QRCodeArea.css'
 
@@ -6,7 +6,7 @@ interface Props {
     text: string;
 }
 
-export function QRCodeArea({
+export const QRCodeArea = memo(function QRCodeArea({
     text
 }: Readonly<Props>): JSX.Element {
     return (<div className={root}>
@@ -17,4 +17,4 @@ export function QRCodeArea({
             height={100}
         />
     </div>)
-}
+})
