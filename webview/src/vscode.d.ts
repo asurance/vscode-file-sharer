@@ -3,11 +3,15 @@ declare interface InMessageMap {
     StartServer: string;
     StopServer: undefined;
     SyncText: string;
+    AddFile: string | undefined;
 }
 declare interface OutMessageMap {
     StartServer: undefined;
     StopServer: undefined;
     SyncText: string;
+    AddFile: undefined;
+    RemoveFile: string;
+    CopyFileUrl: string;
 }
 
 declare type InMessageCB<T extends keyof InMessageMap> = T extends UndefinedName<InMessageMap> ?

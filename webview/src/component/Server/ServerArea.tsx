@@ -1,5 +1,5 @@
 import React from 'react'
-import { SetCallback } from '../../message'
+import { PostMessage, SetCallback } from '../../message'
 import { root } from './ServerArea.css'
 
 const enum ServerStep {
@@ -10,7 +10,6 @@ const enum ServerStep {
 }
 
 interface IProps {
-    postMessage: VSCode['postMessage'];
     onServerEnableChanged: (enable: boolean) => void;
 }
 
@@ -31,10 +30,7 @@ export class ServerArea extends React.PureComponent<IProps, IState> {
     }
 
     private onStartServer = (): void => {
-        const {
-            postMessage,
-        } = this.props
-        postMessage({ type: 'StartServer' })
+        PostMessage({ type: 'StartServer' })
         this.setState({ step: ServerStep.Starting })
     }
 
@@ -48,10 +44,9 @@ export class ServerArea extends React.PureComponent<IProps, IState> {
 
     private onStopServer = (): void => {
         const {
-            postMessage,
             onServerEnableChanged,
         } = this.props
-        postMessage({ type: 'StopServer' })
+        PostMessage({ type: 'StopServer' })
         this.setState({ step: ServerStep.Stoping })
         onServerEnableChanged(false)
     }

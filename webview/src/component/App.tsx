@@ -1,29 +1,24 @@
 import React, { PureComponent } from 'react'
 import { DefaultQRCodeText } from '../config'
-import { ClearCallback, SetCallback } from '../message'
+import { ClearCallback, PostMessage, SetCallback } from '../message'
 import { debounce } from '../util'
-import { root, list } from './App.css'
+import { root } from './App.css'
 import { FileArea } from './File/FileArea'
 import { QRCodeArea } from './QRCode/QRCodeArea'
 import { ServerArea } from './Server/ServerArea'
 import { TextArea } from './Text/TextArea'
-import { UploadArea } from './Upload/UploadArea'
-
-interface IProps {
-    postMessage: VSCode['postMessage'];
-}
 
 interface IState {
     text: string;
     serverEnabled: boolean;
 }
-export class App extends PureComponent<IProps, IState> {
+export class App extends PureComponent<unknown, IState> {
 
     private syncText: (text: string) => void
 
-    constructor(props: Readonly<IProps>) {
+    constructor(props: Readonly<unknown>) {
         super(props)
-        this.syncText = debounce((text) => this.props.postMessage({ type: 'SyncText', data: text }), 250)
+        this.syncText = debounce((text) => PostMessage({ type: 'SyncText', data: text }), 250)
         this.state = {
             text: DefaultQRCodeText,
             serverEnabled: false,
@@ -53,22 +48,14 @@ export class App extends PureComponent<IProps, IState> {
 
     render(): JSX.Element {
         const {
-            postMessage,
-        } = this.props
-        const {
             text,
             serverEnabled,
         } = this.state
         return (<div className={root}>
-            <div className={list}>
-                <ServerArea postMessage={postMessage} onServerEnableChanged={this.onServerEnabledChange} />
-                <QRCodeArea text={text} />
-                <TextArea text={text} onTextChange={this.onTextChange} />
-            </div>
-            <div className={list}>
-                <FileArea />
-                <UploadArea uploadPath="" />
-            </div>
+            <ServerArea onServerEnableChanged={this.onServerEnabledChange} />
+            <QRCodeArea text={text} />
+            <TextArea text={text} onTextChange={this.onTextChange} />
+            {serverEnabled ? <FileArea /> : null}
         </div>)
     }
 

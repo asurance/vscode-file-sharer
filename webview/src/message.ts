@@ -14,3 +14,5 @@ export function SetCallback<T extends keyof InMessageMap>(eventname: T, callback
 export function ClearCallback(eventname: keyof InMessageMap): void {
     delete messageMap[eventname]
 }
+
+export const PostMessage = acquireVsCodeApi().postMessage
