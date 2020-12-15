@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react'
-import { DefaultQRCodeText } from '../config'
 import { ClearCallback, PostMessage, SetCallback } from '../message'
 import { debounce } from '../util'
 import { root } from './App.css'
@@ -20,7 +19,7 @@ export class App extends PureComponent<unknown, IState> {
         super(props)
         this.syncText = debounce((text) => PostMessage({ type: 'SyncText', data: text }), 250)
         this.state = {
-            text: DefaultQRCodeText,
+            text: '',
             serverEnabled: false,
         }
     }
@@ -55,7 +54,7 @@ export class App extends PureComponent<unknown, IState> {
             <ServerArea onServerEnableChanged={this.onServerEnabledChange} />
             <QRCodeArea text={text} />
             <TextArea text={text} onTextChange={this.onTextChange} />
-            {serverEnabled ? <FileArea /> : null}
+            {serverEnabled ? <FileArea onUpdateText={this.onTextChange} /> : null}
         </div>)
     }
 

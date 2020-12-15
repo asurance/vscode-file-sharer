@@ -3,7 +3,13 @@ import { ClearCallback, PostMessage, SetCallback } from '../../message'
 import { Extra } from './Extra'
 import { File } from './File'
 
-export const FileArea = memo(function FileArea(): JSX.Element {
+interface IProps {
+    onUpdateText: (text: string) => void;
+}
+
+export const FileArea = memo(function FileArea({
+    onUpdateText,
+}: Readonly<IProps>): JSX.Element {
     const [files, setFiles] = useState([] as string[])
     const onAddFile = (file: string | undefined): void => {
         if (file !== undefined) {
@@ -29,6 +35,7 @@ export const FileArea = memo(function FileArea(): JSX.Element {
         fileUrl={str}
         onRemoveFile={onRemoveFile}
         onCopyFile={onCopyFileUrl}
+        onUpdateText={onUpdateText}
     />)
     return (<div>
         {fileElements}
