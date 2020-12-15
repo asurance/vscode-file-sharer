@@ -1,10 +1,11 @@
 import express from 'express'
-import { commands, window, ViewColumn, Uri, workspace, env } from 'vscode'
+import { commands, window, ViewColumn, Uri, env, OpenDialogOptions, workspace } from 'vscode'
 import { resolve } from 'path'
 import { readFile, existsSync } from 'fs'
-import { getIp, createServer } from './network'
-import type { Express } from 'express'
-import type { ExtensionContext, WebviewPanel, Disposable, OpenDialogOptions } from 'vscode'
+import type { ExtensionContext, WebviewPanel, Disposable } from 'vscode'
+import { Server } from 'http'
+import { getIp } from './network'
+import { AddressInfo } from 'net'
 
 async function GetWebviewContent(context: ExtensionContext): Promise<string> {
     const publicPath = resolve(context.extensionPath, 'public')
@@ -16,16 +17,9 @@ async function GetWebviewContent(context: ExtensionContext): Promise<string> {
             resolve(data)
         }
     }))
-    return htmlContent.replace(/(<script.+?src="|<link.+?href=")(.+?)"/g, (match, $1, $2) => {
+    return htmlContent.replace(/(<script.+?src=")(.+?)"/g, (match, $1, $2) => {
         return `${$1}${Uri.file(resolve(publicPath, $2)).with({ scheme: 'vscode-resource' })}"`
     })
-}
-
-async function ParseWebviewContent(context: ExtensionContext, app: Express): Promise<string> {
-    const content = await GetWebviewContent(context)
-    const host = getIp()
-    const port = await createServer(app)
-    return content.replace(/<meta id="data".*?\/>/, `<meta id="data" host="${host}" port="${port}" />`)
 }
 
 export function createUUID(): string {
@@ -39,52 +33,122 @@ export function createUUID(): string {
 }
 
 export function activate(context: ExtensionContext): void {
+    let curText = ''
     let panel: WebviewPanel | null = null
-    const fileMap: { [key: string]: string } = {}
+    const fileMap = new Map<string, string>()
+    const webviewContent = GetWebviewContent(context)
     const app = express()
-    app.get('*', (req, res) => {
+    app.use('/text', express.static(resolve(__dirname, '..', 'web')))
+    let server: Server | null = null
+    app.get('/file', (req, res) => {
         const uuid = req.url.slice(1)
-        if (uuid in fileMap) {
-            const path = fileMap[uuid]
+        if (fileMap.has(uuid)) {
+            const path = fileMap.get(uuid)!
             if (existsSync(path)) {
-                res.sendFile(fileMap[uuid])
-            } else {
-                res.status(404).send()
+                res.sendFile(path)
+                return
             }
-        } else {
-            res.status(404).send()
         }
+        res.status(404).send()
     })
-    const webviewContent = ParseWebviewContent(context, app)
+    app.get('/text/syncText', (req, res) => {
+        res.send(curText)
+    })
+    app.put('/text/syncText', (req, res) => {
+        const text = req.body as string
+        curText = text
+        res.status(200).send()
+        const message: OutMessage<'SyncText'> = {
+            type: 'SyncText',
+            data: curText
+        }
+        panel?.webview.postMessage(message)
+    })
     const inMessageCBMap: { [T in keyof InMessageMap]: InMessageCB<T> } = {
-        SelectFile: async () => {
-            const option: OpenDialogOptions = workspace.workspaceFolders ? { defaultUri: workspace.workspaceFolders[0].uri } : {}
-            const uri = await window.showOpenDialog(option)
-            if (uri && uri.length > 0 && panel) {
-                const message: OutMessage<'FileInfo'> = {
-                    type: 'FileInfo',
-                    data: uri.map(u => {
+        StartServer: () => {
+            server?.close()
+            server = app.listen(() => {
+                const ip = getIp()
+                const address = server!.address() as AddressInfo
+                const url = `http://${ip}:${address.port}`
+                const message: OutMessage<'StartServer'> = {
+                    type: 'StartServer',
+                    data: url
+                }
+                panel?.webview.postMessage(message)
+            })
+        },
+        StopServer: () => {
+            server?.close((err) => {
+                if (err) {
+                    window.showErrorMessage(err.message)
+                } else {
+                    const message: OutMessage<'StopServer'> = {
+                        type: 'StopServer',
+                    }
+                    panel?.webview.postMessage(message)
+                }
+            })
+        },
+        SyncText: (text: string) => {
+            curText = text
+        },
+        AddFile: async () => {
+            const getShowDialogOption = async (): Promise<OpenDialogOptions | undefined> => {
+                const option: OpenDialogOptions = { canSelectMany: false }
+                if (workspace.workspaceFolders) {
+                    if (workspace.workspaceFolders.length > 1) {
+                        const pickList = workspace.workspaceFolders.map(f => f.uri.fsPath).concat('取消')
+                        let result = await window.showQuickPick(pickList)
+                        while (!result) {
+                            result = await window.showQuickPick(pickList)
+                        }
+                        if (result === '取消') {
+                            return
+                        } else {
+                            option.defaultUri = Uri.file(result)
+                        }
+                    } else {
+                        option.defaultUri = workspace.workspaceFolders[0].uri
+                    }
+                }
+                return option
+            }
+            const option = await getShowDialogOption()
+            if (option) {
+                const uris = await window.showOpenDialog(option)
+                if (panel) {
+                    if (uris && uris.length > 0) {
                         let uuid = createUUID()
-                        while (uuid in fileMap) {
+                        while (fileMap.has(uuid)) {
                             uuid = createUUID()
                         }
-                        const name = u.fsPath
-                        fileMap[uuid] = name
-                        return {
-                            name,
-                            uuid,
+                        const fsPath = uris[0].fsPath
+                        fileMap.set(uuid, fsPath)
+                        const message: OutMessage<'AddFile'> = {
+                            type: 'AddFile',
+                            data: {
+                                fsPath,
+                                url: uuid,
+                            }
                         }
-                    })
+                        panel.webview.postMessage(message)
+                        return
+                    }
                 }
-                panel.webview.postMessage(message)
             }
+            const message: OutMessage<'AddFile'> = {
+                type: 'AddFile',
+                data: null
+            }
+            panel?.webview.postMessage(message)
         },
-        DeleteFile: (uuid: string) => {
-            delete fileMap[uuid]
+        RemoveFile: (fileUrl: string) => {
+            fileMap.delete(fileUrl)
         },
-        Copy: (content: string) => {
-            env.clipboard.writeText(content)
-        }
+        CopyFileUrl: (fileUrl: string) => {
+            env.clipboard.writeText(fileUrl)
+        },
     }
     context.subscriptions.push(commands.registerCommand('asurance.vscodeFileSharer', async () => {
         if (panel) {
@@ -96,7 +160,8 @@ export function activate(context: ExtensionContext): void {
                 ViewColumn.Beside,
                 {
                     enableScripts: true,
-                    localResourceRoots: [Uri.file(resolve(context.extensionPath, 'public'))]
+                    localResourceRoots: [Uri.file(resolve(context.extensionPath, 'public'))],
+                    retainContextWhenHidden: true,
                 }
             )
             const html = await webviewContent

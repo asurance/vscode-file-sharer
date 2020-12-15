@@ -10,9 +10,9 @@ interface IProps {
 export const FileArea = memo(function FileArea({
     onUpdateText,
 }: Readonly<IProps>): JSX.Element {
-    const [files, setFiles] = useState([] as string[])
-    const onAddFile = (file: string | undefined): void => {
-        if (file !== undefined) {
+    const [files, setFiles] = useState([] as { fsPath: string; url: string }[])
+    const onAddFile = (file: { fsPath: string; url: string } | null): void => {
+        if (file) {
             setFiles([...files, file])
         }
     }
@@ -30,9 +30,10 @@ export const FileArea = memo(function FileArea({
     const onCopyFileUrl = useCallback((fileUrl) => {
         PostMessage({ type: 'CopyFileUrl', data: fileUrl })
     }, [])
-    const fileElements = files.map(str => <File
-        key={str}
-        fileUrl={str}
+    const fileElements = files.map(({ fsPath, url }) => <File
+        key={url}
+        fsPath={fsPath}
+        fileUrl={url}
         onRemoveFile={onRemoveFile}
         onCopyFile={onCopyFileUrl}
         onUpdateText={onUpdateText}

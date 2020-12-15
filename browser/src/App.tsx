@@ -2,18 +2,14 @@ import React, { useCallback, useState } from 'react'
 import { root, buttonList, textArea } from './App.css'
 import { DefaultQRCodeText } from './config'
 
-interface Props {
-    serverUrl: string;
-}
-
-export function App({ serverUrl }: Readonly<Props>): JSX.Element {
+export function App(): JSX.Element {
     const [textValue, setTextValue] = useState('')
     const onRefreshClick = useCallback(() => {
-        fetch(serverUrl).then(async response => setTextValue(await response.text()))
-    }, [serverUrl])
+        fetch('syncText').then(async response => setTextValue(await response.text()))
+    }, [])
     const onSyncClick = useCallback(() => {
-        fetch(serverUrl, { method: 'post', body: textValue })
-    }, [serverUrl, textValue])
+        fetch('syncText', { method: 'put', body: textValue })
+    }, [textValue])
     const onInput = useCallback((ev: React.ChangeEvent<HTMLTextAreaElement>) => {
         setTextValue(ev.target.value)
     }, [])

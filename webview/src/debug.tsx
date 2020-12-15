@@ -26,7 +26,7 @@ window.acquireVsCodeApi = (): VSCode => {
                     console.log((message as OutMessage<'SyncText'>).data)
                     break
                 case 'AddFile':
-                    window.postMessage({ type: 'AddFile', data: window.prompt('输入文件信息', createUUID()) }, '*')
+                    window.postMessage({ type: 'AddFile', data: { fsPath: 'root/', url: window.prompt('输入文件信息', createUUID()) } }, '*')
                     break
                 case 'CopyFileUrl':
                     navigator.clipboard.writeText((message as OutMessage<'CopyFileUrl'>).data)

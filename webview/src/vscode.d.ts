@@ -3,7 +3,7 @@ declare interface InMessageMap {
     StartServer: string;
     StopServer: undefined;
     SyncText: string;
-    AddFile: string | undefined;
+    AddFile: { fsPath: string; url: string } | null;
 }
 declare interface OutMessageMap {
     StartServer: undefined;

@@ -1,6 +1,7 @@
 import React, { memo, useCallback } from 'react'
 
 interface IProps {
+    fsPath: string;
     fileUrl: string;
     onRemoveFile: (fileUrl: string) => void;
     onCopyFile: (fileUrl: string) => void;
@@ -8,6 +9,7 @@ interface IProps {
 }
 
 export const File = memo(function File({
+    fsPath,
     fileUrl,
     onRemoveFile,
     onCopyFile,
@@ -22,7 +24,9 @@ export const File = memo(function File({
     const onClickUpdate = useCallback(() => {
         onUpdateText(fileUrl)
     }, [fileUrl, onUpdateText])
-    return (<div>{fileUrl}
+    return (<div>
+        <span>{fsPath}</span>
+        <span>{fileUrl}</span>
         <button onClick={onClickRemove}>取消</button>
         <button onClick={onClickCopy}>复制链接</button>
         <button onClick={onClickUpdate}>同步到文本框</button>
