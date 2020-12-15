@@ -1,0 +1,1 @@
+export const DefaultQRCodeText = 'Welcome to file sharer!'

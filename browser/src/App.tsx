@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import { root, buttonList, textArea } from './App.css'
+import { DefaultQRCodeText } from './config'
 
 interface Props {
     serverUrl: string;
@@ -21,6 +22,11 @@ export function App({ serverUrl }: Readonly<Props>): JSX.Element {
             <button onClick={onRefreshClick}>更新</button>
             <button onClick={onSyncClick}>同步</button>
         </div>
-        <textarea className={textArea} value={textValue} onChange={onInput} autoComplete="on" />
+        <textarea
+            className={textArea}
+            value={textValue}
+            onChange={onInput}
+            placeholder={DefaultQRCodeText}
+        />
     </div>)
 }
