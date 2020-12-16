@@ -20,14 +20,14 @@ export const FileArea = memo(function FileArea({
         SetCallback('AddFile', onAddFile)
         return (): void => ClearCallback('AddFile')
     })
-    const onRemoveFile = useCallback((fileUrl) => {
-        const index = files.indexOf(fileUrl)
+    const onRemoveFile = useCallback((fileUrl: string) => {
+        const index = files.findIndex(file => file.url === fileUrl)
         if (index >= 0) {
             setFiles([...files.slice(0, index), ...files.slice(index + 1)])
             PostMessage({ type: 'RemoveFile', data: fileUrl })
         }
     }, [files])
-    const onCopyFileUrl = useCallback((fileUrl) => {
+    const onCopyFileUrl = useCallback((fileUrl: string) => {
         PostMessage({ type: 'CopyFileUrl', data: fileUrl })
     }, [])
     const fileElements = files.map(({ fsPath, url }) => <File

@@ -6,6 +6,7 @@ import type { ExtensionContext, WebviewPanel, Disposable } from 'vscode'
 import { Server } from 'http'
 import { getIp } from './network'
 import { AddressInfo } from 'net'
+import bodyParser from 'body-parser'
 
 async function GetWebviewContent(context: ExtensionContext): Promise<string> {
     const publicPath = resolve(context.extensionPath, 'public')
@@ -17,7 +18,7 @@ async function GetWebviewContent(context: ExtensionContext): Promise<string> {
             resolve(data)
         }
     }))
-    return htmlContent.replace(/(<script.+?src=")(.+?)"/g, (match, $1, $2) => {
+    return htmlContent.replace(/(<script.+?src="|<link.+?href=")(.+?)"/g, (match, $1, $2) => {
         return `${$1}${Uri.file(resolve(publicPath, $2)).with({ scheme: 'vscode-resource' })}"`
     })
 }
@@ -38,7 +39,9 @@ export function activate(context: ExtensionContext): void {
     const fileMap = new Map<string, string>()
     const webviewContent = GetWebviewContent(context)
     const app = express()
-    app.use('/text', express.static(resolve(__dirname, '..', 'web')))
+    app.use(bodyParser.text())
+    const webPath = context.asAbsolutePath('web')
+    app.use('/text', express.static(webPath))
     let server: Server | null = null
     app.get('/file', (req, res) => {
         const uuid = req.url.slice(1)
@@ -70,7 +73,7 @@ export function activate(context: ExtensionContext): void {
             server = app.listen(() => {
                 const ip = getIp()
                 const address = server!.address() as AddressInfo
-                const url = `http://${ip}:${address.port}`
+                const url = `http://${ip}:${address.port}/text`
                 const message: OutMessage<'StartServer'> = {
                     type: 'StartServer',
                     data: url
@@ -79,16 +82,10 @@ export function activate(context: ExtensionContext): void {
             })
         },
         StopServer: () => {
-            server?.close((err) => {
-                if (err) {
-                    window.showErrorMessage(err.message)
-                } else {
-                    const message: OutMessage<'StopServer'> = {
-                        type: 'StopServer',
-                    }
-                    panel?.webview.postMessage(message)
-                }
-            })
+            if (server) {
+                server.close()
+                server = null
+            }
         },
         SyncText: (text: string) => {
             curText = text
