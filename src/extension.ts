@@ -95,12 +95,9 @@ export function activate(context: ExtensionContext): void {
                 const option: OpenDialogOptions = { canSelectMany: false }
                 if (workspace.workspaceFolders) {
                     if (workspace.workspaceFolders.length > 1) {
-                        const pickList = workspace.workspaceFolders.map(f => f.uri.fsPath).concat('取消')
-                        let result = await window.showQuickPick(pickList)
-                        while (!result) {
-                            result = await window.showQuickPick(pickList)
-                        }
-                        if (result === '取消') {
+                        const pickList = workspace.workspaceFolders.map(f => f.uri.fsPath)
+                        const result = await window.showQuickPick(pickList)
+                        if (result === undefined) {
                             return
                         } else {
                             option.defaultUri = Uri.file(result)
