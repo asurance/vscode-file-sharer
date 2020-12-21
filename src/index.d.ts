@@ -1,8 +1,18 @@
 declare type UndefinedName<T> = { [key in keyof T]: T[key] extends undefined ? key : never }[keyof T]
+
+declare interface ServerInfo {
+    host: string;
+    port: string;
+}
+
+declare interface FileInfo {
+    fsPath: string;
+    uuid: string;
+}
 declare interface OutMessageMap {
-    StartServer: string;
+    StartServer: ServerInfo;
     SyncText: string;
-    AddFile: { fsPath: string; url: string } | null;
+    AddFile: FileInfo;
 }
 declare interface InMessageMap {
     StartServer: undefined;

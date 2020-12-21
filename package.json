@@ -14,7 +14,7 @@
         "build_browser:prod": "cross-env TS_NODE_PROJECT=\"browser/config/tsconfig.json\" webpack --config browser/config/webpack.prod.config.ts",
         "start:webview": "cross-env TS_NODE_PROJECT=\"webview/config/tsconfig.json\" webpack-dev-server --progress --config webview/config/webpack.dev.web.config.ts",
         "start:browser": "cross-env TS_NODE_PROJECT=\"browser/config/tsconfig.json\" webpack-dev-server --progress --config browser/config/webpack.dev.config.ts",
-        "build:dev": "npm run build_main:dev && npm run build_webview:dev && npm run build_browser:prod",
+        "build:dev": "npm run build_main:dev && npm run build_webview:dev && npm run build_browser:dev",
         "build:prod": "npm run build_main:prod && npm run build_webview:prod && npm run build_browser:prod"
     },
     "keywords": [

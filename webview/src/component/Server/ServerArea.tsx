@@ -9,12 +9,11 @@ const enum ServerStep {
 }
 
 interface IProps {
-    onServerEnableChanged: (enable: boolean) => void;
+    onServerChanged: (serverInfo: ServerInfo | null) => void;
 }
 
 interface IState {
     step: ServerStep;
-    url: string;
 }
 
 export class ServerArea extends React.PureComponent<IProps, IState> {
@@ -22,7 +21,6 @@ export class ServerArea extends React.PureComponent<IProps, IState> {
         super(props)
         this.state = {
             step: ServerStep.Stop,
-            url: '',
         }
         SetCallback('StartServer', this.onStartServerEnd)
     }
@@ -32,27 +30,26 @@ export class ServerArea extends React.PureComponent<IProps, IState> {
         this.setState({ step: ServerStep.Starting })
     }
 
-    private onStartServerEnd = (url: string): void => {
+    private onStartServerEnd = (serverInfo: ServerInfo): void => {
         const {
-            onServerEnableChanged,
+            onServerChanged: onServerEnableChanged,
         } = this.props
-        this.setState({ step: ServerStep.Start, url })
-        onServerEnableChanged(true)
+        this.setState({ step: ServerStep.Start })
+        onServerEnableChanged(serverInfo)
     }
 
     private onStopServer = (): void => {
         const {
-            onServerEnableChanged,
+            onServerChanged: onServerEnableChanged,
         } = this.props
         PostMessage({ type: 'StopServer' })
         this.setState({ step: ServerStep.Stop })
-        onServerEnableChanged(false)
+        onServerEnableChanged(null)
     }
 
     render(): JSX.Element {
         const {
             step,
-            url,
         } = this.state
         let button: JSX.Element | null = null
         switch (step) {
@@ -68,7 +65,6 @@ export class ServerArea extends React.PureComponent<IProps, IState> {
         }
         return (<div className={root}>
             {button}
-            {step === ServerStep.Start ? `文本同步链接:${url}` : null}
         </div>)
     }
 }

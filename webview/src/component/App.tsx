@@ -9,7 +9,7 @@ import { TextArea } from './Text/TextArea'
 
 interface IState {
     text: string;
-    serverEnabled: boolean;
+    serverInfo: ServerInfo | null;
 }
 export class App extends PureComponent<unknown, IState> {
 
@@ -20,12 +20,12 @@ export class App extends PureComponent<unknown, IState> {
         this.syncText = debounce((text) => PostMessage({ type: 'SyncText', data: text }), 250)
         this.state = {
             text: '',
-            serverEnabled: false,
+            serverInfo: null,
         }
     }
 
-    private onServerEnabledChange = (enabled: boolean): void => {
-        this.setState({ serverEnabled: enabled })
+    private onServerChanged = (serverInfo: ServerInfo | null): void => {
+        this.setState({ serverInfo })
     }
 
     private onTextChange = (text: string): void => {
@@ -48,13 +48,13 @@ export class App extends PureComponent<unknown, IState> {
     render(): JSX.Element {
         const {
             text,
-            serverEnabled,
+            serverInfo,
         } = this.state
         return (<div className={root}>
-            <ServerArea onServerEnableChanged={this.onServerEnabledChange} />
+            <ServerArea onServerChanged={this.onServerChanged} />
             <QRCodeArea text={text} />
-            <TextArea text={text} onTextChange={this.onTextChange} />
-            {serverEnabled ? <FileArea onUpdateText={this.onTextChange} /> : null}
+            <TextArea text={text} serverInfo={serverInfo} onTextChange={this.onTextChange} />
+            {serverInfo ? <FileArea serverInfo={serverInfo} onUpdateText={this.onTextChange} /> : null}
         </div>)
     }
 

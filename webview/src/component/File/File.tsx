@@ -2,28 +2,35 @@ import React, { memo, useCallback } from 'react'
 
 interface IProps {
     fsPath: string;
-    fileUrl: string;
+    serverInfo: ServerInfo;
+    uuid: string;
     onRemoveFile: (fileUrl: string) => void;
     onCopyFile: (fileUrl: string) => void;
     onUpdateText: (fileUrl: string) => void;
 }
 
+function GetFileUrl(serverInfo: ServerInfo, uuid: string): string {
+    return `http://${serverInfo.host}:${serverInfo.port}/file/${uuid}`
+}
+
 export const File = memo(function File({
     fsPath,
-    fileUrl,
+    serverInfo,
+    uuid,
     onRemoveFile,
     onCopyFile,
     onUpdateText,
 }: Readonly<IProps>): JSX.Element {
+    const fileUrl = GetFileUrl(serverInfo, uuid)
     const onClickRemove = useCallback(() => {
-        onRemoveFile(fileUrl)
-    }, [fileUrl, onRemoveFile])
+        onRemoveFile(uuid)
+    }, [uuid, onRemoveFile])
     const onClickCopy = useCallback(() => {
         onCopyFile(fileUrl)
-    }, [fileUrl, onCopyFile])
+    }, [onCopyFile, fileUrl])
     const onClickUpdate = useCallback(() => {
         onUpdateText(fileUrl)
-    }, [fileUrl, onUpdateText])
+    }, [onUpdateText, fileUrl])
     return (<div>
         <span>{fsPath}</span>
         <span>{fileUrl}</span>

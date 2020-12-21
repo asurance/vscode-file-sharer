@@ -14,7 +14,7 @@ window.acquireVsCodeApi = (): VSCode => {
             switch (message.type) {
                 case 'StartServer':
                     setTimeout(() => {
-                        window.postMessage({ type: 'StartServer', data: location.href }, '*')
+                        window.postMessage({ type: 'StartServer', data: { host: location.host, port: location.port } }, '*')
                     }, 500)
                     break
                 case 'StopServer':
@@ -26,7 +26,9 @@ window.acquireVsCodeApi = (): VSCode => {
                     console.log((message as OutMessage<'SyncText'>).data)
                     break
                 case 'AddFile':
-                    window.postMessage({ type: 'AddFile', data: { fsPath: 'root/', url: window.prompt('输入文件信息', createUUID()) } }, '*')
+                    window.postMessage({
+                        type: 'AddFile', data: { fsPath: window.prompt('输入文件信息', '/root'), uuid: createUUID() }
+                    }, '*')
                     break
                 case 'CopyFileUrl':
                     navigator.clipboard.writeText((message as OutMessage<'CopyFileUrl'>).data)
