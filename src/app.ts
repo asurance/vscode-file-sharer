@@ -80,25 +80,26 @@ export class App {
         this.curText = text
     }
 
-    private AddFile = async (): Promise<void> => {
-        const getShowDialogOption = async (): Promise<OpenDialogOptions | undefined> => {
-            const option: OpenDialogOptions = { canSelectMany: false }
-            if (workspace.workspaceFolders) {
-                if (workspace.workspaceFolders.length > 1) {
-                    const pickList = workspace.workspaceFolders.map(f => f.uri.fsPath)
-                    const result = await window.showQuickPick(pickList)
-                    if (result === undefined) {
-                        return
-                    } else {
-                        option.defaultUri = Uri.file(result)
-                    }
+    private async getShowDialogOption(): Promise<OpenDialogOptions | undefined> {
+        const option: OpenDialogOptions = { canSelectMany: false }
+        if (workspace.workspaceFolders) {
+            if (workspace.workspaceFolders.length > 1) {
+                const pickList = workspace.workspaceFolders.map(f => f.uri.fsPath)
+                const result = await window.showQuickPick(pickList)
+                if (result === undefined) {
+                    return
                 } else {
-                    option.defaultUri = workspace.workspaceFolders[0].uri
+                    option.defaultUri = Uri.file(result)
                 }
+            } else {
+                option.defaultUri = workspace.workspaceFolders[0].uri
             }
-            return option
         }
-        const option = await getShowDialogOption()
+        return option
+    }
+
+    private AddFile = async (): Promise<void> => {
+        const option = await this.getShowDialogOption()
         if (option) {
             const uris = await window.showOpenDialog(option)
             if (this.panel) {
@@ -149,6 +150,7 @@ export class App {
             const dispose: Disposable[] = []
             dispose.push(this.panel.onDidDispose(() => {
                 this.panel = null
+                this.fileMap.clear()
                 dispose.forEach(d => d.dispose())
             }), this.panel.webview.onDidReceiveMessage(async (message) => {
                 if (message.type in this) {
