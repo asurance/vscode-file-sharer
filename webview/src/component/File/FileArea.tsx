@@ -2,6 +2,7 @@ import React, { memo, useCallback, useEffect, useState } from 'react'
 import { ClearCallback, PostMessage, SetCallback } from '../../message'
 import { Extra } from './Extra'
 import { File } from './File'
+import { root } from './FileArea.css'
 
 interface IProps {
     onUpdateText: (text: string) => void;
@@ -27,19 +28,15 @@ export const FileArea = memo(function FileArea({
             PostMessage({ type: 'RemoveFile', data: uuid })
         }
     }, [files])
-    const onCopyFileUrl = useCallback((url: string) => {
-        PostMessage({ type: 'CopyFileUrl', data: url })
-    }, [])
     const fileElements = files.map(({ fsPath, uuid }) => <File
         key={uuid}
         fsPath={fsPath}
         uuid={uuid}
         serverInfo={serverInfo}
         onRemoveFile={onRemoveFile}
-        onCopyFile={onCopyFileUrl}
         onUpdateText={onUpdateText}
     />)
-    return (<div>
+    return (<div className={root}>
         {fileElements}
         <Extra />
     </div>)

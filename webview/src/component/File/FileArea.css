@@ -1,0 +1,27 @@
+.root {
+    display: flex;
+    flex-direction: column;
+    margin: 8px;
+}
+
+.add {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin: 4px;
+}
+
+.file {
+    display: flex;
+    flex-direction: column;
+    margin: 4px;
+}
+
+.file-content {
+    display: flex;
+    justify-content: space-between;
+}
+
+.button{
+    display: flex;
+}

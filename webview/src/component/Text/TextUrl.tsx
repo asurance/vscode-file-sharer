@@ -1,4 +1,6 @@
 import React, { memo, useCallback } from 'react'
+import { PostMessage } from '../../message'
+import { textUrl } from './TextArea.css'
 
 interface IProps {
     url: string;
@@ -12,8 +14,14 @@ export const TextUrl = memo(function TextUrl({
     const onClickUpdate = useCallback(() => {
         onUpdateText(url)
     }, [onUpdateText, url])
-    return (<div>
+    const onClickCopy = useCallback(() => {
+        PostMessage({ type: 'CopyFileUrl', data: url })
+    }, [url])
+    return (<div className={textUrl} >
         <span>{url}</span>
-        <button onClick={onClickUpdate}>同步到文本框</button>
+        <div>
+            <button onClick={onClickCopy}>复制链接</button>
+            <button onClick={onClickUpdate}>同步到文本框</button>
+        </div>
     </div>)
 })

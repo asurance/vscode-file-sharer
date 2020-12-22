@@ -11,6 +11,7 @@ body {
 }
 
 button {
+    white-space: nowrap;
     background-color: var(--vscode-button-background);
     color: var(--vscode-button-foreground);
     border-color: var(--vscode-button-background);

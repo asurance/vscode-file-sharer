@@ -1,8 +1,16 @@
 .root {
     display: flex;
     flex-direction: column;
+    margin: 8px;
+}
+
+.text-url {
+    display: flex;
+    justify-content: space-between;
+    margin: 4px
 }
 
 .text-area {
     flex: auto;
+    margin: 4px;
 }

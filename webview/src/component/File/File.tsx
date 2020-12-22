@@ -1,11 +1,12 @@
 import React, { memo, useCallback } from 'react'
+import { PostMessage } from '../../message'
+import { file, fileContent, button } from './FileArea.css'
 
 interface IProps {
     fsPath: string;
     serverInfo: ServerInfo;
     uuid: string;
     onRemoveFile: (fileUrl: string) => void;
-    onCopyFile: (fileUrl: string) => void;
     onUpdateText: (fileUrl: string) => void;
 }
 
@@ -18,7 +19,6 @@ export const File = memo(function File({
     serverInfo,
     uuid,
     onRemoveFile,
-    onCopyFile,
     onUpdateText,
 }: Readonly<IProps>): JSX.Element {
     const fileUrl = GetFileUrl(serverInfo, uuid)
@@ -26,16 +26,22 @@ export const File = memo(function File({
         onRemoveFile(uuid)
     }, [uuid, onRemoveFile])
     const onClickCopy = useCallback(() => {
-        onCopyFile(fileUrl)
-    }, [onCopyFile, fileUrl])
+        PostMessage({ type: 'CopyFileUrl', data: fileUrl })
+    }, [fileUrl])
     const onClickUpdate = useCallback(() => {
         onUpdateText(fileUrl)
     }, [onUpdateText, fileUrl])
-    return (<div>
-        <span>{fsPath}</span>
-        <span>{fileUrl}</span>
-        <button onClick={onClickRemove}>取消</button>
-        <button onClick={onClickCopy}>复制链接</button>
-        <button onClick={onClickUpdate}>同步到文本框</button>
+    return (<div className={file}>
+        <div className={fileContent}>
+            <span>{fsPath}</span>
+            <button onClick={onClickRemove}>取消</button>
+        </div>
+        <div className={fileContent}>
+            <span>{fileUrl}</span>
+            <div className={button}>
+                <button onClick={onClickCopy}>复制链接</button>
+                <button onClick={onClickUpdate}>同步到文本框</button>
+            </div>
+        </div>
     </div>)
 })
