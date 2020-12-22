@@ -1,6 +1,7 @@
 import React, { memo, useCallback } from 'react'
 import { DefaultQRCodeText } from '../../config'
 import { root, textArea } from './TextArea.css'
+import { TextUrl } from './TextUrl'
 
 interface IProps {
     text: string;
@@ -21,7 +22,7 @@ export const TextArea = memo(function TextArea({
         onTextChange(ev.target.value)
     }, [onTextChange])
     return (<div className={root}>
-        {serverInfo ? <div>{GetSyncTextUrl(serverInfo)}</div> : null}
+        {serverInfo ? <TextUrl url={GetSyncTextUrl(serverInfo)} onUpdateText={onTextChange} /> : null}
         <textarea className={textArea} placeholder={DefaultQRCodeText} onChange={onInput} value={text} />
     </div>)
 })
