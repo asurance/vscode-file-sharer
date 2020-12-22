@@ -54,13 +54,13 @@ export class ServerArea extends React.PureComponent<IProps, IState> {
         let button: JSX.Element | null = null
         switch (step) {
             case ServerStep.Start:
-                button = <button onClick={this.onStopServer}>停止</button>
+                button = <button onClick={this.onStopServer}>停止服务器</button>
                 break
             case ServerStep.Stop:
-                button = <button onClick={this.onStartServer}>启动</button>
+                button = <button onClick={this.onStartServer}>启动服务器</button>
                 break
             case ServerStep.Starting:
-                button = <button disabled>启动中</button>
+                button = <button disabled>服务器启动中</button>
                 break
         }
         return (<div className={root}>
