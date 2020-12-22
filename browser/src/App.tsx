@@ -15,8 +15,8 @@ export function App(): JSX.Element {
     }, [])
     return (<div className={root}>
         <div className={buttonList}>
-            <button onClick={onRefreshClick}>更新</button>
-            <button onClick={onSyncClick}>同步</button>
+            <button title="更新" onClick={onRefreshClick}>⬇</button>
+            <button title="同步" onClick={onSyncClick}>⬆</button>
         </div>
         <textarea
             className={textArea}
