@@ -21,6 +21,7 @@ declare interface OutMessageMap {
     AddFile: undefined;
     RemoveFile: string;
     CopyFileUrl: string;
+    SaveQRCode: string;
 }
 
 declare type InMessageCB<T extends keyof InMessageMap> = T extends UndefinedName<InMessageMap> ?

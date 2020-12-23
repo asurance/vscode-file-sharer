@@ -5,6 +5,7 @@ import { Server } from 'http'
 import { AddressInfo } from 'net'
 import bodyParser from 'body-parser'
 import { existsSync } from 'fs'
+import { toFile } from 'qrcode'
 
 export class App {
     private curText = ''
@@ -82,20 +83,27 @@ export class App {
 
     private async getShowDialogOption(): Promise<OpenDialogOptions | undefined> {
         const option: OpenDialogOptions = { canSelectMany: false }
+        const defaultUri = await this.getDefaultUri()
+        if (defaultUri) {
+            option.defaultUri = defaultUri
+            return option
+        }
+    }
+
+    private async getDefaultUri(): Promise<Uri | undefined> {
         if (workspace.workspaceFolders) {
             if (workspace.workspaceFolders.length > 1) {
                 const pickList = workspace.workspaceFolders.map(f => f.uri.fsPath)
                 const result = await window.showQuickPick(pickList)
                 if (result === undefined) {
-                    return
+                    return undefined
                 } else {
-                    option.defaultUri = Uri.file(result)
+                    return Uri.file(result)
                 }
             } else {
-                option.defaultUri = workspace.workspaceFolders[0].uri
+                return workspace.workspaceFolders[0].uri
             }
         }
-        return option
     }
 
     private AddFile = async (): Promise<void> => {
@@ -129,6 +137,18 @@ export class App {
 
     private CopyFileUrl = (fileUrl: string): void => {
         env.clipboard.writeText(fileUrl)
+    }
+
+    private SaveQRCode = async (text: string): Promise<void> => {
+        const defaultUri = await this.getDefaultUri()
+        const targetUri = await window.showSaveDialog({ defaultUri, filters: { png: ['png'], svg: ['svg'] } })
+        if (targetUri) {
+            toFile(targetUri.fsPath, text, (err) => {
+                if (err) {
+                    window.showErrorMessage(err.message)
+                }
+            })
+        }
     }
 
     active = async (): Promise<void> => {

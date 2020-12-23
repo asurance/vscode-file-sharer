@@ -23,7 +23,7 @@ window.acquireVsCodeApi = (): VSCode => {
                     }, 500)
                     break
                 case 'SyncText':
-                    console.log((message as OutMessage<'SyncText'>).data)
+                    console.log('SyncText', (message as OutMessage<'SyncText'>).data)
                     break
                 case 'AddFile':
                     window.postMessage({
@@ -32,6 +32,9 @@ window.acquireVsCodeApi = (): VSCode => {
                     break
                 case 'CopyFileUrl':
                     navigator.clipboard.writeText((message as OutMessage<'CopyFileUrl'>).data)
+                    break
+                case 'SaveQRCode':
+                    console.log('SaveQRCode', (message as OutMessage<'SaveQRCode'>).data)
                     break
             }
         }
