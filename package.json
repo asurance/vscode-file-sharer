@@ -1,6 +1,6 @@
 {
     "name": "vscode-file-sharer",
-    "version": "1.0.2",
+    "version": "1.1.0",
     "description": "file sharer for vscode",
     "publisher": "asurance",
     "main": "./dist/extension.js",
@@ -41,14 +41,14 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/asurance/vscode-qrcode.git"
+        "url": "https://github.com/asurance/vscode-file-sharer.git"
     },
     "icon": "icon.png",
     "license": "SEE LICENSE IN LICENSE",
     "bugs": {
-        "url": "https://github.com/asurance/vscode-qrcode/issues"
+        "url": "https://github.com/asurance/vscode-file-sharer/issues"
     },
-    "homepage": "https://github.com/asurance/vscode-qrcode#readme",
+    "homepage": "https://github.com/asurance/vscode-file-sharer#readme",
     "devDependencies": {
         "@types/body-parser": "^1.19.0",
         "@types/clean-webpack-plugin": "^0.1.3",

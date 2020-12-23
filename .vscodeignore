@@ -7,3 +7,4 @@ webview/**/*
 .gitignore
 .vscodeignore
 task.md
+browser/**/*
