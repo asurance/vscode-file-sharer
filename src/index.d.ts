@@ -10,12 +10,13 @@ declare interface FileInfo {
     uuid: string;
 }
 declare interface OutMessageMap {
-    StartServer: ServerInfo;
+    StartServer: ServerInfo | null;
     SyncText: string;
     AddFile: FileInfo;
 }
 declare interface InMessageMap {
-    StartServer: undefined;
+    ShowError: string;
+    StartServer: number | null;
     StopServer: undefined;
     SyncText: string;
     AddFile: undefined;

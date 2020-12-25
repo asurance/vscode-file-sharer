@@ -12,9 +12,17 @@ window.acquireVsCodeApi = (): VSCode => {
     return {
         postMessage(message): void {
             switch (message.type) {
+                case 'ShowError':
+                    window.alert((message as OutMessage<'ShowError'>).data)
+                    break
                 case 'StartServer':
+                    console.log('StartServer', (message as OutMessage<'StartServer'>).data)
                     setTimeout(() => {
-                        window.postMessage({ type: 'StartServer', data: { host: location.host, port: location.port } }, '*')
+                        if (window.confirm('是否启动成功')) {
+                            window.postMessage({ type: 'StartServer', data: { host: location.host, port: location.port } }, '*')
+                        } else {
+                            window.postMessage({ type: 'StartServer', data: null }, '*')
+                        }
                     }, 500)
                     break
                 case 'StopServer':

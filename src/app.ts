@@ -1,11 +1,11 @@
 import { Disposable, env, ExtensionContext, OpenDialogOptions, Uri, ViewColumn, WebviewPanel, window, workspace } from 'vscode'
 import { createUUID, getIp, GetWebviewContent } from './util'
 import express, { Express, Request, Response } from 'express'
-import { Server } from 'http'
-import { AddressInfo } from 'net'
+import { createServer, Server } from 'http'
 import bodyParser from 'body-parser'
 import { existsSync } from 'fs'
 import { toFile } from 'qrcode'
+import { AddressInfo } from 'net'
 
 export class App {
     private curText = ''
@@ -53,20 +53,45 @@ export class App {
         this.panel?.webview.postMessage(message)
     }
 
-    private StartServer = (): void => {
+    private ShowError = (error: string): void => {
+        window.showErrorMessage(error)
+    }
+
+    private StartServer = (port: number | null): void => {
         this.server?.close()
-        this.server = this.app.listen(() => {
-            const ip = getIp()
-            const port = (this.server!.address() as AddressInfo).port
+        this.server = createServer(this.app)
+        this.server.on('error', (err: Error & { code: string }) => {
+            if (err.code === 'EADDRINUSE') {
+                window.showErrorMessage('该端口已被占用,请更换端口或置空以使用随机端口')
+            } else {
+                window.showErrorMessage(err.message)
+            }
             const message: OutMessage<'StartServer'> = {
                 type: 'StartServer',
-                data: {
-                    host: ip,
-                    port: `${port}`
-                }
+                data: null
             }
             this.panel?.webview.postMessage(message)
+            this.server!.close()
+            this.server = null
         })
+        if (port === null) {
+            this.server.listen(this.onServerStart)
+        } else {
+            this.server.listen(port, '0.0.0.0', this.onServerStart)
+        }
+    }
+
+    private onServerStart = (): void => {
+        const ip = getIp()
+        const port = (this.server!.address() as AddressInfo).port
+        const message: OutMessage<'StartServer'> = {
+            type: 'StartServer',
+            data: {
+                host: ip,
+                port: `${port}`
+            }
+        }
+        this.panel?.webview.postMessage(message)
     }
 
     private StopServer = (): void => {
@@ -153,12 +178,12 @@ export class App {
 
     active = async (): Promise<void> => {
         if (this.panel) {
-            this.panel.reveal(ViewColumn.Beside)
+            this.panel.reveal(ViewColumn.Active)
         } else {
             this.panel = window.createWebviewPanel(
                 'FileSharer',
                 '文件分享',
-                ViewColumn.Beside,
+                ViewColumn.Active,
                 {
                     enableScripts: true,
                     localResourceRoots: [Uri.file(this.context.asAbsolutePath('public'))],
@@ -174,6 +199,7 @@ export class App {
                 dispose.forEach(d => d.dispose())
             }), this.panel.webview.onDidReceiveMessage(async (message) => {
                 if (message.type in this) {
+                    // @ts-expect-error ts暂时无法识别该语法
                     this[message.type as keyof InMessageMap](message.data)
                 }
             }))
