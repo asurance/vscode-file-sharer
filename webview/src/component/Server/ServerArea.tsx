@@ -79,22 +79,27 @@ export class ServerArea extends React.PureComponent<IProps, IState> {
             step,
             port,
         } = this.state
-        let button: JSX.Element | null = null
         switch (step) {
             case ServerStep.Start:
-                button = <button onClick={this.onStopServer}>停止服务器</button>
-                break
+                return (
+                    <div className={root}>
+                        <button onClick={this.onStopServer}>停止服务器</button>
+                    </div>
+                )
             case ServerStep.Stop:
-                button = <button onClick={this.onStartServer}>启动服务器</button>
-                break
+                return (
+                    <div className={root}>
+                        <button onClick={this.onStartServer}>启动服务器</button>
+                        <span className={portTip}>端口号(空为随机):</span>
+                        <textarea className={portText} rows={1} cols={12} value={port} onChange={this.onPortChange} />
+                    </div>
+                )
             case ServerStep.Starting:
-                button = <button disabled>服务器启动中</button>
-                break
+                return (
+                    <div className={root}>
+                        <button disabled>服务器启动中</button>
+                    </div>
+                )
         }
-        return (<div className={root}>
-            {button}
-            <span className={portTip}>端口号(空为随机):</span>
-            <textarea className={portText} rows={1} cols={12} value={port} onChange={this.onPortChange} />
-        </div>)
     }
 }
