@@ -1,6 +1,7 @@
 .root {
     display: flex;
-    align-items: flex-start;
+    align-items: baseline;
+    justify-content: flex-start;
     margin: 8px;
 }
 
