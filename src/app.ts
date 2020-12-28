@@ -6,6 +6,7 @@ import bodyParser from 'body-parser'
 import { existsSync } from 'fs'
 import { toFile } from 'qrcode'
 import { AddressInfo } from 'net'
+import { FileData } from './fileData'
 
 export class App {
     private curText = ''
@@ -13,7 +14,7 @@ export class App {
     private webviewContent: Promise<string>
     private app: Express
     private server: Server | null = null
-    private fileMap = new Map<string, string>()
+    private fileMap = new Map<string, string | FileData>()
 
     constructor(private context: ExtensionContext) {
         this.webviewContent = GetWebviewContent(context.asAbsolutePath('public'))
@@ -23,19 +24,62 @@ export class App {
         app.get('/file/:uuid', this.onGetFile)
         app.get('/text/syncText', this.onGetText)
         app.put('/text/syncText', this.onPutText)
+        app.put('/text/upload', this.onPutFile)
         this.app = app
     }
 
     private onGetFile = (req: Request, res: Response): void => {
         const uuid = req.params.uuid
         if (this.fileMap.has(uuid)) {
-            const path = this.fileMap.get(uuid)!
-            if (existsSync(path)) {
-                res.sendFile(path)
+            const target = this.fileMap.get(uuid)!
+            if (typeof target === 'string') {
+                if (existsSync(target)) {
+                    res.sendFile(target)
+                    return
+                }
+            } else {
+                res.setHeader('content-type', target.contentType)
+                res.send(target.buffer)
                 return
             }
         }
-        res.status(404).send()
+        res.status(404).send('File not found')
+    }
+
+    private onPutFile = (req: Request, res: Response): void => {
+        if (!req.headers['content-length']) {
+            res.sendStatus(411).send('Require content length')
+            return
+        }
+        if (!req.headers['content-type']) {
+            res.sendStatus(415).send('Require content type')
+            return
+        }
+        const file: FileData = {
+            buffer: Buffer.allocUnsafe(parseInt(req.headers['content-length'])),
+            contentType: req.headers['content-type'],
+        }
+        let offset = 0
+        req.on('data', (chunk: Buffer) => {
+            chunk.copy(file.buffer, offset)
+            offset += chunk.length
+        })
+        req.on('end', () => {
+            let uuid = createUUID()
+            while (this.fileMap.has(uuid)) {
+                uuid = createUUID()
+            }
+            this.fileMap.set(uuid, file)
+            const message: OutMessage<'AddFile'> = {
+                type: 'AddFile',
+                data: {
+                    fsPath: 'upload',
+                    uuid,
+                }
+            }
+            this.panel?.webview.postMessage(message)
+            res.send()
+        })
     }
 
     private onGetText = (req: Request, res: Response): void => {
