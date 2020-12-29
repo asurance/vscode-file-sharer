@@ -6,8 +6,16 @@
 
 ## 功能
 1. 文本转二维码(无需启动服务器)
-2. 文本和移动端同步(需启动内置服务器)
-3. 选择文件给移动端下载(需启动内置服务器)
+2. 保存二维码(无需启动服务器)
+3. 文本和移动端同步(需启动内置服务器)
+4. 选择文件给移动端下载(需启动内置服务器)
+5. 上传文件(需启动内置服务器)
+
+## Webview
+![webview](assets/webview.png)
+## Browser
+
+![browser](assets/browser.png)
 
 ## 技术点
 * 前端使用[react](https://react.docschina.org/)
