@@ -1,0 +1,22 @@
+.root {
+    margin: 4px;
+}
+
+.frame {
+    position: absolute;
+    border: 1px solid;
+    text-align: center;
+}
+
+.mask {
+    position: absolute;
+    overflow: hidden;
+}
+
+.progress {
+    position: absolute;
+    text-align: center;
+    background-color: black;
+    color: white;
+    text-align: center;
+}

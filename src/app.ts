@@ -39,6 +39,7 @@ export class App {
                 }
             } else {
                 res.setHeader('content-type', target.contentType)
+                res.setHeader('content-disposition', `filename="${target.filename}"`)
                 res.send(target.buffer)
                 return
             }
@@ -52,12 +53,22 @@ export class App {
             return
         }
         if (!req.headers['content-type']) {
-            res.sendStatus(415).send('Require content type')
+            res.sendStatus(400).send('Require content type')
+            return
+        }
+        if (!req.headers['content-disposition']) {
+            res.sendStatus(400).send('Require content disposition')
+            return
+        }
+        const matchResult = req.headers['content-disposition'].match(/filename="(.*)"/)
+        if (!(matchResult?.[1]?.length)) {
+            res.sendStatus(400).send('Content disposition format error')
             return
         }
         const file: FileData = {
             buffer: Buffer.allocUnsafe(parseInt(req.headers['content-length'])),
             contentType: req.headers['content-type'],
+            filename: matchResult[1]
         }
         let offset = 0
         req.on('data', (chunk: Buffer) => {
@@ -73,7 +84,7 @@ export class App {
             const message: OutMessage<'AddFile'> = {
                 type: 'AddFile',
                 data: {
-                    fsPath: 'upload',
+                    fsPath: file.filename,
                     uuid,
                 }
             }
