@@ -12,6 +12,8 @@
         "strictPropertyInitialization": true,
         "alwaysStrict": true,
         "esModuleInterop": true,
-        "forceConsistentCasingInFileNames": true
+        "forceConsistentCasingInFileNames": true,
+        "experimentalDecorators": true,
+        "moduleResolution": "node"
     }
 }

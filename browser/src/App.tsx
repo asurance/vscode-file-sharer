@@ -1,12 +1,21 @@
 import React, { useCallback, useState } from 'react'
 import { root, buttonList, textArea } from './App.css'
 import { DefaultQRCodeText } from './config'
-import { FileInfo } from './FileInfo'
+import { FileInfo, IFileInfoProps } from './FileInfo'
+import { useArray } from './useArray'
+import { createUUID, MockUploadFile } from './util'
+
+const fileUuidSet = new Set<string>()
 
 export function App(): JSX.Element {
     const [textValue, setTextValue] = useState('')
     const [fileValue, setFileValue] = useState('')
-    const [uploadFiles, setUploadFiles] = useState<File[]>([])
+    const {
+        state: files,
+        add: addFile,
+        remove: removeFile,
+        update: updateFile,
+    } = useArray<IFileInfoProps>()
     const onRefreshClick = useCallback(() => {
         fetch('syncText').then(async response => setTextValue(await response.text()))
     }, [])
@@ -18,18 +27,27 @@ export function App(): JSX.Element {
     }, [])
     const onFileInput = useCallback((evt: React.ChangeEvent<HTMLInputElement>) => {
         if (evt.target.files) {
-            setUploadFiles([...uploadFiles, ...evt.target.files])
+            for (const file of evt.target.files) {
+                let uuid = createUUID()
+                while (fileUuidSet.has(uuid)) {
+                    uuid = createUUID()
+                }
+                fileUuidSet.add(uuid)
+                const fileInfo: IFileInfoProps = {
+                    key: uuid, name: file.name, percent: 0
+                }
+                addFile(fileInfo)
+                MockUploadFile(file, (percent: number) => {
+                    fileInfo.percent = percent
+                    updateFile(fileInfo)
+                }).then(() => {
+                    fileUuidSet.delete(uuid)
+                    removeFile(fileInfo)
+                })
+            }
             setFileValue('')
         }
-    }, [uploadFiles])
-    const onFileUploaded = useCallback((file: File) => {
-        const index = uploadFiles.indexOf(file)
-        if (index >= 0) {
-            const f = [...uploadFiles.slice(0, index), ...uploadFiles.slice(index + 1)]
-            console.log(f.length)
-            setUploadFiles(f)
-        }
-    }, [uploadFiles])
+    }, [addFile, updateFile, removeFile])
     return (<div className={root}>
         <div className={buttonList}>
             <button onClick={onRefreshClick}>更新文本</button>
@@ -37,7 +55,8 @@ export function App(): JSX.Element {
             <button onClick={onSyncClick}>上传文本</button>
         </div>
         {
-            uploadFiles.map(file => <FileInfo key={file.name} file={file} onFinish={onFileUploaded} />)
+            // eslint-disable-next-line react/jsx-key
+            files.map(file => <FileInfo {...file} />)
         }
         <textarea
             className={textArea}

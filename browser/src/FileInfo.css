@@ -6,17 +6,16 @@
     position: absolute;
     border: 1px solid;
     text-align: center;
-}
-
-.mask {
-    position: absolute;
-    overflow: hidden;
+    width: 100%;
 }
 
 .progress {
     position: absolute;
+    margin: 1px;
     text-align: center;
     background-color: black;
     color: white;
     text-align: center;
+    width: 100%;
+    transition: 0.5s clip-path;
 }
