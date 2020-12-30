@@ -43,6 +43,9 @@ export function App(): JSX.Element {
                 }).then(() => {
                     fileUuidSet.delete(uuid)
                     removeFile(fileInfo)
+                }, () => {
+                    fileUuidSet.delete(uuid)
+                    removeFile(fileInfo)
                 })
             }
             setFileValue('')
