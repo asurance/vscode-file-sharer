@@ -3,7 +3,7 @@ import { root, buttonList, textArea } from './App.css'
 import { DefaultQRCodeText } from './config'
 import { FileInfo, IFileInfoProps } from './FileInfo'
 import { useArray } from './useArray'
-import { createUUID, MockUploadFile } from './util'
+import { createUUID, UploadFile } from './util'
 
 const fileUuidSet = new Set<string>()
 
@@ -37,7 +37,7 @@ export function App(): JSX.Element {
                     key: uuid, name: file.name, percent: 0
                 }
                 addFile(fileInfo)
-                MockUploadFile(file, (percent: number) => {
+                UploadFile(file, (percent: number) => {
                     fileInfo.percent = percent
                     updateFile(fileInfo)
                 }).then(() => {
