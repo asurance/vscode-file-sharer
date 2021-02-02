@@ -113,7 +113,7 @@ export class App {
     }
 
     private StartServer = (port: number | null): void => {
-        this.server?.close()
+        this.StopServer()
         this.server = createServer(this.app)
         this.server.on('error', (err: Error & { code: string }) => {
             if (err.code === 'EADDRINUSE') {
@@ -151,6 +151,7 @@ export class App {
 
     private StopServer = (): void => {
         this.fileMap.clear()
+        this.curText = ''
         if (this.server) {
             this.server.close()
             this.server = null
@@ -250,7 +251,7 @@ export class App {
             const dispose: Disposable[] = []
             dispose.push(this.panel.onDidDispose(() => {
                 this.panel = null
-                this.fileMap.clear()
+                this.StopServer()
                 dispose.forEach(d => d.dispose())
             }), this.panel.webview.onDidReceiveMessage(async (message) => {
                 if (message.type in this) {
