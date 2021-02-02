@@ -4,3 +4,13 @@
     align-items: center;
     margin: 8px;
 }
+
+.list {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.hidden {
+    display: none;
+}
